@@ -13,7 +13,7 @@ export const defaultPizzaImage =
 
 const ProductListItems = ({product}: ProductListItemProps) => {
   return (
-    <Link href = {'/ProductDetailScreen'} asChild>
+    <Link href = {`/menu/${product.id}`} asChild>
     <Pressable style={styles.container}>
       <Image source={{ uri: product.image || defaultPizzaImage}} style={styles.image} resizeMode='contain'/>
       <Text style={styles.title}>{product.name}</Text>
