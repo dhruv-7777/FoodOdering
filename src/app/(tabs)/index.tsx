@@ -1,15 +1,19 @@
-import { StyleSheet, Image } from 'react-native';
+import { StyleSheet, FlatList } from 'react-native';
 import Colors from '@/src/constants/Colors';
 import products from '@/assets/data/products';
-import { Text, View } from '../../components/Themed';
+import { View } from '../../components/Themed';
 import ProductListItems from '../../components/ProductListItems';
-
-const product = products[0];
 
 export default function TabOneScreen() {
   return (
     <View>
-      <ProductListItems product={product} />
+      <FlatList
+        data={products}
+        renderItem={({ item }) => <ProductListItems product={item} />}
+        numColumns={2}
+        contentContainerStyle={{gap:10, padding:10}}
+        columnWrapperStyle ={{gap:10}}
+      />
     </View>
   );
 }
