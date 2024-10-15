@@ -8,11 +8,13 @@ type CartType = {
     items: CartItem[],
     addItem: (product: Product, size: CartItem['size']) => void;
     updateQuantity: (itemId: string, amount: -1 | 1 ) => void;
+    total: number;
 }
 export const CartContext = createContext<CartType>({
     items: [],
     addItem: () => {},
-    updateQuantity: () => {}
+    updateQuantity: () => {},
+    total: 0,
 });
 
 // CartProvider component to wrap the app
@@ -25,14 +27,14 @@ const CartProvider = ({ children }: PropsWithChildren) => {
 
 
          // Already product is in cart 
-        const existingItems = items.find((item) => {
-            item.product === product && item.size === size
-        })
+         const existingItem = items.find(
+            (item) => item.product === product && item.size === size
+          );
         
-        if(existingItems){
-            updateQuantity(existingItems.id, 1)
+          if (existingItem) {
+            updateQuantity(existingItem.id, 1);
             return;
-        }
+          }
 
         const newCartItem:CartItem ={
             id: randomUUID(),
@@ -51,8 +53,12 @@ const CartProvider = ({ children }: PropsWithChildren) => {
         const updatedItems = items.map(item => item.id !== itemId ? item : {...item, quantity: item.quantity + amount}).filter( (item) => item.quantity > 0)
         setItems(updatedItems);
     }
+    const total = items.reduce(
+        (sum, item) => (sum += item.product.price * item.quantity),
+        0
+      );
     return (
-        <CartContext.Provider value={{ items, addItem, updateQuantity }}>
+        <CartContext.Provider value={{ items, addItem, updateQuantity, total }}>
            <View style={{ flex: 1 }}>{children}</View>
         </CartContext.Provider>
     );
