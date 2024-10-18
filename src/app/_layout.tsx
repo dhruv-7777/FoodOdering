@@ -8,11 +8,11 @@ import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
-import CartProvider from '../provider/CartProvider';
-import AuthProvider from '../provider/AuthProvider';
-import QueryProvider from '../provider/QueryProvider';
-import { StripeProvider } from '@stripe/stripe-react-native';
-import NotificationProvider from '../provider/NotificationProvider';
+import CartProvider from '@/src/provider/CartProvider';
+import AuthProvider from '@/src/provider/AuthProvider';
+import QueryProvider from '@/src/provider/QueryProvider';
+// import { StripeProvider } from '@stripe/stripe-react-native';
+import NotificationProvider from '@/src/provider/NotificationProvider';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -56,9 +56,9 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <StripeProvider
+      {/* <StripeProvider
         publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY || ''}
-      >
+      > */}
         <AuthProvider>
           <QueryProvider>
             <NotificationProvider>
@@ -85,7 +85,7 @@ function RootLayoutNav() {
             </NotificationProvider>
           </QueryProvider>
         </AuthProvider>
-      </StripeProvider>
+      {/* </StripeProvider> */}
     </ThemeProvider>
   );
 }

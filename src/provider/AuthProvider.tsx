@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/src/lib/supabase';
 import { Session } from '@supabase/supabase-js';
 import {
   PropsWithChildren,
@@ -8,9 +8,15 @@ import {
   useState,
 } from 'react';
 
+type Profile = {
+  id: string;
+  name: string;
+  group: string; // Adjust this based on your actual schema
+};
+
 type AuthData = {
   session: Session | null;
-  profile: any;
+  profile: Profile | null;
   loading: boolean;
   isAdmin: boolean;
 };
@@ -24,7 +30,7 @@ const AuthContext = createContext<AuthData>({
 
 export default function AuthProvider({ children }: PropsWithChildren) {
   const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState(null);
+  const [profile, setProfile] = useState<Profile | null>(null); // Use Profile type
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -36,13 +42,14 @@ export default function AuthProvider({ children }: PropsWithChildren) {
       setSession(session);
 
       if (session) {
-        // fetch profile
+        // Fetch profile
         const { data } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', session.user.id)
           .single();
-        setProfile(data || null);
+
+        setProfile(data as Profile || null); // Cast data as Profile
       }
 
       setLoading(false);

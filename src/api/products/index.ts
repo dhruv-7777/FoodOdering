@@ -16,6 +16,7 @@ export const useProductList = () => {
       if (error) {
         throw new Error(error.message);
       }
+      console.log("data",data);
       return data;
     },
   });

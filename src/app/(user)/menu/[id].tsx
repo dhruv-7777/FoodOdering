@@ -7,24 +7,22 @@ import {
   Pressable,
   ActivityIndicator,
 } from 'react-native';
-
+import { defaultPizzaImage } from '@/src/components/ProductListItems';
 import { useState } from 'react';
 import Button from '@/src/components/Button';
-// import { useCart } from '@/src/providers/CartProvider';
-import { PizzaSize } from '../../types';
+import { useCart } from '@/src/provider/CartProvider';
+import { PizzaSize } from '@/src/types';
 import { useProduct } from '@/src/api/products';
-import RemoteImage from '../../../components/RemoteImage';
+import RemoteImage from '@/src/components/RemoteImage';
 
 const sizes: PizzaSize[] = ['S', 'M', 'L', 'XL'];
 
 const ProductDetailsScreen = () => {
-  const defaultPizzaImage =
-    'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png';
   const { id: idString } = useLocalSearchParams();
   const id = parseFloat(typeof idString === 'string' ? idString : idString[0]);
   const { data: product, error, isLoading } = useProduct(id);
 
-  // const { addItem } = useCart();
+  const { addItem } = useCart();
 
   const router = useRouter();
 
@@ -34,7 +32,7 @@ const ProductDetailsScreen = () => {
     if (!product) {
       return;
     }
-    // addItem(product, selectedSize);
+    addItem(product, selectedSize);
     router.push('/cart');
   };
 
@@ -43,6 +41,9 @@ const ProductDetailsScreen = () => {
   }
 
   if (error) {
+    return <Text>Failed to fetch products</Text>;
+  }
+  if (!product) {
     return <Text>Failed to fetch products</Text>;
   }
 

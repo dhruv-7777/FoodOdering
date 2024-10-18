@@ -1,18 +1,41 @@
-import { View, Text, StyleSheet, FlatList, Pressable, } from 'react-native';
-import { Stack, useLocalSearchParams } from 'expo-router';
-import Colors from '../../../constants/Colors';
-import orders from '../../../../assets/data/orders';
+import { useOrderDetails, useUpdateOrder } from '@/src/api/orders';
 import OrderItemListItem from '../../../components/OrderItemListItem';
 import OrderListItem from '../../../components/OrderListItem';
-import { OrderStatusList } from '../../../types';
+import Colors from '../../../constants/Colors';
+import { notifyUserAboutOrderUpdate } from '@/src/lib/notifications';
+import { OrderStatusList } from '@/src/types';
+import orders from 'assets/data/orders';
+import { Stack, useLocalSearchParams } from 'expo-router';
+import {
+  FlatList,
+  Text,
+  View,
+  Pressable,
+  ActivityIndicator,
+} from 'react-native';
 
-const OrderDetailScreen = () => {
-  const { id } = useLocalSearchParams();
+export default function OrderDetailsScreen() {
+  const { id: idString } = useLocalSearchParams();
+  const id = parseFloat(typeof idString === 'string' ? idString : idString[0]);
 
-  const order = orders.find((o) => o.id.toString() === id);
+  const { data: order, isLoading, error } = useOrderDetails(id);
+  const { mutate: updateOrder } = useUpdateOrder();
 
-  if (!order) {
-    return <Text>Order not found!</Text>;
+  const updateStatus = async (status: string) => {
+    await updateOrder({
+      id: id,
+      updatedFields: { status },
+    });
+    if (order) {
+      await notifyUserAboutOrderUpdate({ ...order, status });
+    }
+  };
+
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
+  if (error || !order) {
+    return <Text>Failed to fetch</Text>;
   }
 
   return (
@@ -31,7 +54,7 @@ const OrderDetailScreen = () => {
               {OrderStatusList.map((status) => (
                 <Pressable
                   key={status}
-                  onPress={() => console.warn('Update status')}
+                  onPress={() => updateStatus(status)}
                   style={{
                     borderColor: Colors.light.tint,
                     borderWidth: 1,
@@ -60,14 +83,4 @@ const OrderDetailScreen = () => {
       />
     </View>
   );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 10,
-    flex: 1,
-    gap: 10,
-  },
-});
-
-export default OrderDetailScreen;
+}

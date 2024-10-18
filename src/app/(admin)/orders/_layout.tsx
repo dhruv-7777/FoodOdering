@@ -1,15 +1,10 @@
-import { Stack } from "expo-router";
-import { Link, Tabs } from 'expo-router';
-import { Pressable } from 'react-native';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { Stack } from 'expo-router';
 
-import Colors from '../../../constants/Colors';
-
-export default function MenuStack(){
-    return (
-        <Stack >
-            {/* <Stack.Screen name ='index' options={{ title:'Order' }} /> */}
-            <Stack.Screen name ='list' options={{ headerShown: false }} />
-        </Stack>
-    )
+export default function MenuStack() {
+  return (
+    <Stack>
+      {/* <Stack.Screen name="index" options={{ title: 'Orders' }} /> */}
+      <Stack.Screen name="list" options={{ headerShown: false }} />
+    </Stack>
+  );
 }

@@ -10,16 +10,13 @@ const SignUpScreen = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-async function signUpWithEmail() {
-  setLoading(true);
-  const { error } = await supabase.auth.signUp({
-    email: email,
-    password: password,
-  });
+  async function signUpWithEmail() {
+    setLoading(true);
+    const { error } = await supabase.auth.signUp({ email, password });
 
-  if (error) Alert.alert(error.message);
-  setLoading(false);
-}
+    if (error) Alert.alert(error.message);
+    setLoading(false);
+  }
 
   return (
     <View style={styles.container}>
@@ -42,12 +39,12 @@ async function signUpWithEmail() {
         secureTextEntry
       />
 
-<Button
+      <Button
         onPress={signUpWithEmail}
         disabled={loading}
         text={loading ? 'Creating account...' : 'Create account'}
       />
-       <Link href="/sign-in" style={styles.textButton}>
+      <Link href="/sign-in" style={styles.textButton}>
         Sign in
       </Link>
     </View>
@@ -59,7 +56,6 @@ const styles = StyleSheet.create({
     padding: 20,
     justifyContent: 'center',
     flex: 1,
-    backgroundColor: 'white'
   },
   label: {
     color: 'gray',
